@@ -82,7 +82,7 @@
 }
 
 /* --- Signature: chromatic aberration on the wordmark --- */
-@utility rgb-split {
+.rgb-split {
   position: relative;
   display: inline-block;
   color: var(--foreground);
@@ -90,27 +90,27 @@
   font-weight: 700;
   letter-spacing: -0.045em;
   line-height: 0.85;
+  white-space: nowrap;
 }
-@utility rgb-split-layer {
+.rgb-split-layer {
   position: absolute;
   inset: 0;
   pointer-events: none;
   mix-blend-mode: screen;
   opacity: 0.85;
+  white-space: nowrap;
 }
-
-/* Animated split on load */
 @keyframes split-in {
   0%   { transform: translate3d(0,0,0); opacity: 0; }
   40%  { transform: translate3d(var(--tx, -14px), 0, 0); opacity: 0.9; }
   100% { transform: translate3d(var(--rest, -3px), 0, 0); opacity: 0.85; }
 }
-@utility split-cyan {
+.split-cyan {
   color: var(--cyan);
   --tx: -18px; --rest: -3px;
   animation: split-in 1400ms cubic-bezier(.2,.7,.1,1) both;
 }
-@utility split-magenta {
+.split-magenta {
   color: var(--magenta);
   --tx: 18px; --rest: 3px;
   animation: split-in 1400ms cubic-bezier(.2,.7,.1,1) both;
@@ -128,12 +128,12 @@
 }
 
 /* Hairline underline that grows on hover */
-@utility hair-link {
+.hair-link {
   position: relative;
   padding-bottom: 2px;
   color: var(--foreground);
 }
-@utility hair-link::after {
+.hair-link::after {
   content: "";
   position: absolute;
   left: 0; right: 0; bottom: 0;
@@ -143,10 +143,10 @@
   transform-origin: left;
   transition: transform 400ms cubic-bezier(.2,.7,.1,1);
 }
-@utility hair-link:hover::after { transform: scaleX(1); }
+.hair-link:hover::after { transform: scaleX(1); }
 
 /* Waveform strip (pure CSS) */
-@utility waveform {
+.waveform {
   --wf-color: var(--cyan);
   background:
     repeating-linear-gradient(
@@ -155,18 +155,19 @@
       color-mix(in oklab, var(--wf-color) 55%, transparent) 3px 4px,
       transparent 4px 6px
     );
-  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+          mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
 }
 
 /* Card hover chromatic edge */
-@utility clip-card {
+.clip-card {
   position: relative;
   isolation: isolate;
   transition: transform 500ms cubic-bezier(.2,.7,.1,1);
 }
-@utility clip-card:hover { transform: translateY(-2px); }
-@utility clip-card::before,
-@utility clip-card::after {
+.clip-card:hover { transform: translateY(-2px); }
+.clip-card::before,
+.clip-card::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -175,10 +176,10 @@
   transition: transform 400ms cubic-bezier(.2,.7,.1,1), opacity 300ms;
   opacity: 0;
 }
-@utility clip-card::before { border-color: var(--cyan);    transform: translate(0,0); }
-@utility clip-card::after  { border-color: var(--magenta); transform: translate(0,0); }
-@utility clip-card:hover::before { opacity: 0.9; transform: translate(-4px, -3px); }
-@utility clip-card:hover::after  { opacity: 0.9; transform: translate( 4px,  3px); }
+.clip-card::before { border-color: var(--cyan); }
+.clip-card::after  { border-color: var(--magenta); }
+.clip-card:hover::before { opacity: 0.9; transform: translate(-4px, -3px); }
+.clip-card:hover::after  { opacity: 0.9; transform: translate( 4px,  3px); }
 
 @media (prefers-reduced-motion: reduce) {
   .split-cyan, .split-magenta { animation: none; }
