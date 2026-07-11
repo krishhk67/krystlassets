@@ -9,16 +9,37 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WishlistRouteImport } from './routes/wishlist'
+import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
+import { Route as LibraryRouteImport } from './routes/library'
 import { Route as CreatorsRouteImport } from './routes/creators'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CategoriesRouteImport } from './routes/categories'
+import { Route as CartRouteImport } from './routes/cart'
+import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CreatorHandleRouteImport } from './routes/creator.$handle'
 import { Route as AssetSlugRouteImport } from './routes/asset.$slug'
 
+const WishlistRoute = WishlistRouteImport.update({
+  id: '/wishlist',
+  path: '/wishlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersRoute = OrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarketplaceRoute = MarketplaceRouteImport.update({
   id: '/marketplace',
   path: '/marketplace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LibraryRoute = LibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CreatorsRoute = CreatorsRouteImport.update({
@@ -26,9 +47,24 @@ const CreatorsRoute = CreatorsRouteImport.update({
   path: '/creators',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategoriesRoute = CategoriesRouteImport.update({
   id: '/categories',
   path: '/categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CartRoute = CartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccountRoute = AccountRouteImport.update({
+  id: '/account',
+  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -49,26 +85,44 @@ const AssetSlugRoute = AssetSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/cart': typeof CartRoute
   '/categories': typeof CategoriesRoute
+  '/checkout': typeof CheckoutRoute
   '/creators': typeof CreatorsRoute
+  '/library': typeof LibraryRoute
   '/marketplace': typeof MarketplaceRoute
+  '/orders': typeof OrdersRoute
+  '/wishlist': typeof WishlistRoute
   '/asset/$slug': typeof AssetSlugRoute
   '/creator/$handle': typeof CreatorHandleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/cart': typeof CartRoute
   '/categories': typeof CategoriesRoute
+  '/checkout': typeof CheckoutRoute
   '/creators': typeof CreatorsRoute
+  '/library': typeof LibraryRoute
   '/marketplace': typeof MarketplaceRoute
+  '/orders': typeof OrdersRoute
+  '/wishlist': typeof WishlistRoute
   '/asset/$slug': typeof AssetSlugRoute
   '/creator/$handle': typeof CreatorHandleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/account': typeof AccountRoute
+  '/cart': typeof CartRoute
   '/categories': typeof CategoriesRoute
+  '/checkout': typeof CheckoutRoute
   '/creators': typeof CreatorsRoute
+  '/library': typeof LibraryRoute
   '/marketplace': typeof MarketplaceRoute
+  '/orders': typeof OrdersRoute
+  '/wishlist': typeof WishlistRoute
   '/asset/$slug': typeof AssetSlugRoute
   '/creator/$handle': typeof CreatorHandleRoute
 }
@@ -76,45 +130,90 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/account'
+    | '/cart'
     | '/categories'
+    | '/checkout'
     | '/creators'
+    | '/library'
     | '/marketplace'
+    | '/orders'
+    | '/wishlist'
     | '/asset/$slug'
     | '/creator/$handle'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/account'
+    | '/cart'
     | '/categories'
+    | '/checkout'
     | '/creators'
+    | '/library'
     | '/marketplace'
+    | '/orders'
+    | '/wishlist'
     | '/asset/$slug'
     | '/creator/$handle'
   id:
     | '__root__'
     | '/'
+    | '/account'
+    | '/cart'
     | '/categories'
+    | '/checkout'
     | '/creators'
+    | '/library'
     | '/marketplace'
+    | '/orders'
+    | '/wishlist'
     | '/asset/$slug'
     | '/creator/$handle'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AccountRoute: typeof AccountRoute
+  CartRoute: typeof CartRoute
   CategoriesRoute: typeof CategoriesRoute
+  CheckoutRoute: typeof CheckoutRoute
   CreatorsRoute: typeof CreatorsRoute
+  LibraryRoute: typeof LibraryRoute
   MarketplaceRoute: typeof MarketplaceRoute
+  OrdersRoute: typeof OrdersRoute
+  WishlistRoute: typeof WishlistRoute
   AssetSlugRoute: typeof AssetSlugRoute
   CreatorHandleRoute: typeof CreatorHandleRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/wishlist': {
+      id: '/wishlist'
+      path: '/wishlist'
+      fullPath: '/wishlist'
+      preLoaderRoute: typeof WishlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders': {
+      id: '/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof OrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/marketplace': {
       id: '/marketplace'
       path: '/marketplace'
       fullPath: '/marketplace'
       preLoaderRoute: typeof MarketplaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/creators': {
@@ -124,11 +223,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CreatorsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/categories': {
       id: '/categories'
       path: '/categories'
       fullPath: '/categories'
       preLoaderRoute: typeof CategoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cart': {
+      id: '/cart'
+      path: '/cart'
+      fullPath: '/cart'
+      preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/account': {
+      id: '/account'
+      path: '/account'
+      fullPath: '/account'
+      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -157,9 +277,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AccountRoute: AccountRoute,
+  CartRoute: CartRoute,
   CategoriesRoute: CategoriesRoute,
+  CheckoutRoute: CheckoutRoute,
   CreatorsRoute: CreatorsRoute,
+  LibraryRoute: LibraryRoute,
   MarketplaceRoute: MarketplaceRoute,
+  OrdersRoute: OrdersRoute,
+  WishlistRoute: WishlistRoute,
   AssetSlugRoute: AssetSlugRoute,
   CreatorHandleRoute: CreatorHandleRoute,
 }
