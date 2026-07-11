@@ -185,3 +185,49 @@
   .split-cyan, .split-magenta { animation: none; }
   .tl-track { animation: none; }
 }
+
+/* Scanlines overlay */
+.scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 2px,
+    color-mix(in oklab, var(--foreground) 4%, transparent) 2px 3px
+  );
+}
+
+/* Soft glow ring */
+.glow-cyan { box-shadow: 0 0 0 1px color-mix(in oklab, var(--cyan) 40%, transparent), 0 0 40px -8px color-mix(in oklab, var(--cyan) 55%, transparent); }
+.glow-magenta { box-shadow: 0 0 0 1px color-mix(in oklab, var(--magenta) 40%, transparent), 0 0 40px -8px color-mix(in oklab, var(--magenta) 55%, transparent); }
+.glow-amber { box-shadow: 0 0 0 1px color-mix(in oklab, var(--amber) 40%, transparent), 0 0 40px -8px color-mix(in oklab, var(--amber) 55%, transparent); }
+
+/* Ticker */
+@keyframes ticker {
+  from { transform: translate3d(0,0,0); }
+  to   { transform: translate3d(-50%,0,0); }
+}
+.ticker-track { animation: ticker 40s linear infinite; will-change: transform; }
+
+/* RGB card hover */
+.rgb-hover { position: relative; }
+.rgb-hover::before, .rgb-hover::after {
+  content: attr(data-label);
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; opacity: 0;
+  transition: transform 300ms cubic-bezier(.2,.7,.1,1), opacity 250ms;
+  mix-blend-mode: screen;
+  font: inherit;
+}
+.rgb-hover::before { color: var(--cyan); }
+.rgb-hover::after  { color: var(--magenta); }
+.rgb-hover:hover::before { opacity: .9; transform: translate(-2px, 0); }
+.rgb-hover:hover::after  { opacity: .9; transform: translate( 2px, 0); }
+
+/* Count up pulse */
+@keyframes soft-pulse { 0%,100% { opacity: 1; } 50% { opacity: .55; } }
+.live-dot { animation: soft-pulse 1.6s ease-in-out infinite; }
+
+/* Cursor spotlight (for hero) */
+.spotlight {
+  background: radial-gradient(600px circle at var(--mx,50%) var(--my,20%), color-mix(in oklab, var(--cyan) 14%, transparent), transparent 55%);
+}
