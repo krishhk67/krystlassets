@@ -43,7 +43,7 @@ function CreatorPage() {
               <div className="mt-1 font-mono text-[12px] text-[color:var(--mute)]">@{c.handle} · {c.location} · joined {c.joined}</div>
               <p className="mt-3 max-w-xl text-[color:var(--foreground)]/85">{c.bio}</p>
               <div className="mt-4 flex flex-wrap gap-2">
-                {c.achievements.map((a) => <Chip key={a} tint={c.tint}>{a}</Chip>)}
+                {c.achievements.map((a: string) => <Chip key={a} tint={c.tint}>{a}</Chip>)}
               </div>
             </div>
             <div className="ml-auto flex flex-wrap items-center gap-2">

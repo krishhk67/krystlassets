@@ -9,38 +9,128 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as MarketplaceRouteImport } from './routes/marketplace'
+import { Route as CreatorsRouteImport } from './routes/creators'
+import { Route as CategoriesRouteImport } from './routes/categories'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CreatorHandleRouteImport } from './routes/creator.$handle'
+import { Route as AssetSlugRouteImport } from './routes/asset.$slug'
 
+const MarketplaceRoute = MarketplaceRouteImport.update({
+  id: '/marketplace',
+  path: '/marketplace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CreatorsRoute = CreatorsRouteImport.update({
+  id: '/creators',
+  path: '/creators',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriesRoute = CategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CreatorHandleRoute = CreatorHandleRouteImport.update({
+  id: '/creator/$handle',
+  path: '/creator/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AssetSlugRoute = AssetSlugRouteImport.update({
+  id: '/asset/$slug',
+  path: '/asset/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/categories': typeof CategoriesRoute
+  '/creators': typeof CreatorsRoute
+  '/marketplace': typeof MarketplaceRoute
+  '/asset/$slug': typeof AssetSlugRoute
+  '/creator/$handle': typeof CreatorHandleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/categories': typeof CategoriesRoute
+  '/creators': typeof CreatorsRoute
+  '/marketplace': typeof MarketplaceRoute
+  '/asset/$slug': typeof AssetSlugRoute
+  '/creator/$handle': typeof CreatorHandleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/categories': typeof CategoriesRoute
+  '/creators': typeof CreatorsRoute
+  '/marketplace': typeof MarketplaceRoute
+  '/asset/$slug': typeof AssetSlugRoute
+  '/creator/$handle': typeof CreatorHandleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/categories'
+    | '/creators'
+    | '/marketplace'
+    | '/asset/$slug'
+    | '/creator/$handle'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/categories'
+    | '/creators'
+    | '/marketplace'
+    | '/asset/$slug'
+    | '/creator/$handle'
+  id:
+    | '__root__'
+    | '/'
+    | '/categories'
+    | '/creators'
+    | '/marketplace'
+    | '/asset/$slug'
+    | '/creator/$handle'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CategoriesRoute: typeof CategoriesRoute
+  CreatorsRoute: typeof CreatorsRoute
+  MarketplaceRoute: typeof MarketplaceRoute
+  AssetSlugRoute: typeof AssetSlugRoute
+  CreatorHandleRoute: typeof CreatorHandleRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/marketplace': {
+      id: '/marketplace'
+      path: '/marketplace'
+      fullPath: '/marketplace'
+      preLoaderRoute: typeof MarketplaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/creators': {
+      id: '/creators'
+      path: '/creators'
+      fullPath: '/creators'
+      preLoaderRoute: typeof CreatorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categories': {
+      id: '/categories'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof CategoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +138,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/creator/$handle': {
+      id: '/creator/$handle'
+      path: '/creator/$handle'
+      fullPath: '/creator/$handle'
+      preLoaderRoute: typeof CreatorHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/asset/$slug': {
+      id: '/asset/$slug'
+      path: '/asset/$slug'
+      fullPath: '/asset/$slug'
+      preLoaderRoute: typeof AssetSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CategoriesRoute: CategoriesRoute,
+  CreatorsRoute: CreatorsRoute,
+  MarketplaceRoute: MarketplaceRoute,
+  AssetSlugRoute: AssetSlugRoute,
+  CreatorHandleRoute: CreatorHandleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

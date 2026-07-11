@@ -101,13 +101,13 @@ function AssetPage() {
                 <div>
                   <SectionLabel>// compatibility</SectionLabel>
                   <div className="flex flex-wrap gap-2">
-                    {a.software.map((s) => <Chip key={s}>{s}</Chip>)}
+                    {a.software.map((s: string) => <Chip key={s}>{s}</Chip>)}
                     <Chip tint="cyan">macOS</Chip><Chip tint="cyan">Windows</Chip>
                   </div>
                 </div>
                 <div>
                   <SectionLabel>// tags</SectionLabel>
-                  <div className="flex flex-wrap gap-2">{a.tags.map((t) => <Chip key={t}>{t}</Chip>)}</div>
+                  <div className="flex flex-wrap gap-2">{a.tags.map((t: string) => <Chip key={t}>{t}</Chip>)}</div>
                 </div>
               </div>
             )}
