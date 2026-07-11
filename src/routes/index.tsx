@@ -393,11 +393,11 @@ function Header() {
         </a>
         <nav className="ml-4 hidden gap-6 lg:flex">
           {[
-            ["Marketplace", "#marketplace"],
-            ["Creators", "#creators"],
-            ["Categories", "#categories"],
-            ["Sell", "#sell"],
-            ["Docs", "#docs"],
+            ["Marketplace", "/marketplace"],
+            ["Creators", "/creators"],
+            ["Categories", "/categories"],
+            ["Free", "/free"],
+            ["Sell", "/dashboard"],
           ].map(([l, h]) => (
             <a key={l} href={h} className="hair-link text-sm">{l}</a>
           ))}
@@ -406,11 +406,11 @@ function Header() {
           <SearchBar />
         </div>
         <div className="flex items-center gap-2">
-          <a href="#login" className="hair-link hidden sm:inline-block text-sm text-[color:var(--mute)] hover:text-foreground">
+          <a href="/auth" className="hair-link hidden sm:inline-block text-sm text-[color:var(--mute)] hover:text-foreground">
             Sign in
           </a>
           <a
-            href="#sell"
+            href="/dashboard"
             className="group inline-flex items-center gap-2 border border-[color:var(--amber)] bg-[color:var(--amber)] px-4 py-1.5 font-mono text-[11px] uppercase tracking-widest text-[color:var(--ink)] transition-colors hover:bg-transparent hover:text-[color:var(--amber)]"
           >
             <span className="h-1.5 w-1.5 bg-[color:var(--ink)] group-hover:bg-[color:var(--amber)]" />
@@ -479,14 +479,14 @@ function Hero() {
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <a
-                href="#marketplace"
+                href="/marketplace"
                 className="group inline-flex items-center gap-3 bg-[color:var(--foreground)] px-5 py-3 text-sm font-medium text-[color:var(--ink)] transition-all hover:bg-[color:var(--amber)]"
               >
                 Explore marketplace
                 <span className="font-mono text-[11px] text-[color:var(--ink)]/60 transition-transform group-hover:translate-x-1">→</span>
               </a>
               <a
-                href="#sell"
+                href="/dashboard"
                 className="group inline-flex items-center gap-3 border border-[color:var(--hairline)] px-5 py-3 text-sm text-[color:var(--foreground)] transition-colors hover:border-[color:var(--cyan)] hover:text-[color:var(--cyan)]"
               >
                 Become a creator
@@ -498,7 +498,7 @@ function Hero() {
               <SearchBar big />
               <div className="mt-3 flex flex-wrap gap-2 font-mono text-[10px] uppercase tracking-widest text-[color:var(--mute)]">
                 {["grain", "portra", "whoosh", "MOGRT", "resolve LUT", "HDRI"].map((t) => (
-                  <a key={t} href="#marketplace" className="border border-[color:var(--hairline)] px-2 py-1 hover:border-[color:var(--cyan)] hover:text-[color:var(--cyan)]">
+                  <a key={t} href="/marketplace" className="border border-[color:var(--hairline)] px-2 py-1 hover:border-[color:var(--cyan)] hover:text-[color:var(--cyan)]">
                     {t}
                   </a>
                 ))}
@@ -583,7 +583,7 @@ function Trending() {
             <em className="not-italic text-[color:var(--cyan)]">right now</em>.
           </h2>
         </div>
-        <a href="#marketplace" className="hair-link hidden md:inline-block font-mono text-[11px] uppercase tracking-widest text-[color:var(--mute)]">
+        <a href="/marketplace" className="hair-link hidden md:inline-block font-mono text-[11px] uppercase tracking-widest text-[color:var(--mute)]">
           View all 14,382 →
         </a>
       </div>
@@ -608,7 +608,7 @@ function Creators() {
               The people whose folders you'd <em className="not-italic text-[color:var(--magenta)]">steal</em>.
             </h2>
           </div>
-          <a href="#creators" className="hair-link hidden md:inline-block font-mono text-[11px] uppercase tracking-widest text-[color:var(--mute)]">
+          <a href="/creators" className="hair-link hidden md:inline-block font-mono text-[11px] uppercase tracking-widest text-[color:var(--mute)]">
             Directory →
           </a>
         </div>
@@ -673,7 +673,7 @@ function Categories() {
         {categories.map((c, i) => (
           <li key={c.label}>
             <a
-              href="#marketplace"
+              href="/marketplace"
               className={
                 "group relative flex items-center justify-between gap-3 border-[color:var(--hairline)] px-5 py-6 transition-colors hover:bg-[color:var(--surface)] " +
                 "border-t border-l " +
@@ -741,7 +741,7 @@ function CreatorDashboard() {
               Start selling
               <span className="font-mono text-[11px] text-[color:var(--ink)]/70">→</span>
             </a>
-            <a href="#docs" className="hair-link text-sm text-[color:var(--mute)] hover:text-foreground self-center">
+            <a href="/docs" className="hair-link text-sm text-[color:var(--mute)] hover:text-foreground self-center">
               Read the creator handbook
             </a>
           </div>
@@ -869,11 +869,11 @@ function CTA() {
           Pull the pack. Or <em className="not-italic text-[color:var(--amber)]">ship</em> one.
         </h2>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-          <a href="#marketplace" className="inline-flex items-center gap-3 bg-[color:var(--foreground)] px-6 py-4 text-sm font-medium text-[color:var(--ink)] transition-transform hover:-translate-y-0.5">
+          <a href="/marketplace" className="inline-flex items-center gap-3 bg-[color:var(--foreground)] px-6 py-4 text-sm font-medium text-[color:var(--ink)] transition-transform hover:-translate-y-0.5">
             Explore marketplace
             <span className="font-mono text-[11px] text-[color:var(--ink)]/60">14,382 assets</span>
           </a>
-          <a href="#sell" className="inline-flex items-center gap-3 border border-[color:var(--amber)] px-6 py-4 text-sm font-medium text-[color:var(--amber)] hover:bg-[color:var(--amber)] hover:text-[color:var(--ink)] transition-colors">
+          <a href="/dashboard" className="inline-flex items-center gap-3 border border-[color:var(--amber)] px-6 py-4 text-sm font-medium text-[color:var(--amber)] hover:bg-[color:var(--amber)] hover:text-[color:var(--ink)] transition-colors">
             Become a creator
             <span className="font-mono text-[11px] opacity-70">85% payout</span>
           </a>
