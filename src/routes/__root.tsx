@@ -77,17 +77,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Krystlassets — assets for editors who cut fast" },
+      { title: "Krystlassets — the marketplace for editors and creators" },
       {
         name: "description",
         content:
-          "Overlays, transitions, SFX and LUTs built inside a real timeline. Drag in, cut, ship. By Krystl.",
+          "Buy and sell overlays, LUTs, presets, SFX and motion graphics. Built for editors. Built for creators.",
       },
-      { property: "og:title", content: "Krystlassets — assets for editors who cut fast" },
+      { property: "og:title", content: "Krystlassets — the marketplace for editors and creators" },
       {
         property: "og:description",
         content:
-          "Overlays, transitions, SFX and LUTs built inside a real timeline. Drag in, cut, ship.",
+          "Buy and sell overlays, LUTs, presets, SFX and motion graphics. Built for editors. Built for creators.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
