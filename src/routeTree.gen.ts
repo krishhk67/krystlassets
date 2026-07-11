@@ -11,14 +11,21 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WishlistRouteImport } from './routes/wishlist'
 import { Route as OrdersRouteImport } from './routes/orders'
+import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as LibraryRouteImport } from './routes/library'
+import { Route as FreeRouteImport } from './routes/free'
+import { Route as DealsRouteImport } from './routes/deals'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CreatorsRouteImport } from './routes/creators'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as CategoriesRouteImport } from './routes/categories'
 import { Route as CartRouteImport } from './routes/cart'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardUploadRouteImport } from './routes/dashboard.upload'
 import { Route as CreatorHandleRouteImport } from './routes/creator.$handle'
 import { Route as AssetSlugRouteImport } from './routes/asset.$slug'
 
@@ -32,6 +39,11 @@ const OrdersRoute = OrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MarketplaceRoute = MarketplaceRouteImport.update({
   id: '/marketplace',
   path: '/marketplace',
@@ -40,6 +52,21 @@ const MarketplaceRoute = MarketplaceRouteImport.update({
 const LibraryRoute = LibraryRouteImport.update({
   id: '/library',
   path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreeRoute = FreeRouteImport.update({
+  id: '/free',
+  path: '/free',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DealsRoute = DealsRouteImport.update({
+  id: '/deals',
+  path: '/deals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CreatorsRoute = CreatorsRouteImport.update({
@@ -62,6 +89,16 @@ const CartRoute = CartRouteImport.update({
   path: '/cart',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AccountRoute = AccountRouteImport.update({
   id: '/account',
   path: '/account',
@@ -71,6 +108,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardUploadRoute = DashboardUploadRouteImport.update({
+  id: '/upload',
+  path: '/upload',
+  getParentRoute: () => DashboardRoute,
 } as any)
 const CreatorHandleRoute = CreatorHandleRouteImport.update({
   id: '/creator/$handle',
@@ -86,100 +128,148 @@ const AssetSlugRoute = AssetSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/categories': typeof CategoriesRoute
   '/checkout': typeof CheckoutRoute
   '/creators': typeof CreatorsRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/deals': typeof DealsRoute
+  '/free': typeof FreeRoute
   '/library': typeof LibraryRoute
   '/marketplace': typeof MarketplaceRoute
+  '/notifications': typeof NotificationsRoute
   '/orders': typeof OrdersRoute
   '/wishlist': typeof WishlistRoute
   '/asset/$slug': typeof AssetSlugRoute
   '/creator/$handle': typeof CreatorHandleRoute
+  '/dashboard/upload': typeof DashboardUploadRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/categories': typeof CategoriesRoute
   '/checkout': typeof CheckoutRoute
   '/creators': typeof CreatorsRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/deals': typeof DealsRoute
+  '/free': typeof FreeRoute
   '/library': typeof LibraryRoute
   '/marketplace': typeof MarketplaceRoute
+  '/notifications': typeof NotificationsRoute
   '/orders': typeof OrdersRoute
   '/wishlist': typeof WishlistRoute
   '/asset/$slug': typeof AssetSlugRoute
   '/creator/$handle': typeof CreatorHandleRoute
+  '/dashboard/upload': typeof DashboardUploadRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
+  '/admin': typeof AdminRoute
+  '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/categories': typeof CategoriesRoute
   '/checkout': typeof CheckoutRoute
   '/creators': typeof CreatorsRoute
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/deals': typeof DealsRoute
+  '/free': typeof FreeRoute
   '/library': typeof LibraryRoute
   '/marketplace': typeof MarketplaceRoute
+  '/notifications': typeof NotificationsRoute
   '/orders': typeof OrdersRoute
   '/wishlist': typeof WishlistRoute
   '/asset/$slug': typeof AssetSlugRoute
   '/creator/$handle': typeof CreatorHandleRoute
+  '/dashboard/upload': typeof DashboardUploadRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/account'
+    | '/admin'
+    | '/auth'
     | '/cart'
     | '/categories'
     | '/checkout'
     | '/creators'
+    | '/dashboard'
+    | '/deals'
+    | '/free'
     | '/library'
     | '/marketplace'
+    | '/notifications'
     | '/orders'
     | '/wishlist'
     | '/asset/$slug'
     | '/creator/$handle'
+    | '/dashboard/upload'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/account'
+    | '/admin'
+    | '/auth'
     | '/cart'
     | '/categories'
     | '/checkout'
     | '/creators'
+    | '/dashboard'
+    | '/deals'
+    | '/free'
     | '/library'
     | '/marketplace'
+    | '/notifications'
     | '/orders'
     | '/wishlist'
     | '/asset/$slug'
     | '/creator/$handle'
+    | '/dashboard/upload'
   id:
     | '__root__'
     | '/'
     | '/account'
+    | '/admin'
+    | '/auth'
     | '/cart'
     | '/categories'
     | '/checkout'
     | '/creators'
+    | '/dashboard'
+    | '/deals'
+    | '/free'
     | '/library'
     | '/marketplace'
+    | '/notifications'
     | '/orders'
     | '/wishlist'
     | '/asset/$slug'
     | '/creator/$handle'
+    | '/dashboard/upload'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AccountRoute: typeof AccountRoute
+  AdminRoute: typeof AdminRoute
+  AuthRoute: typeof AuthRoute
   CartRoute: typeof CartRoute
   CategoriesRoute: typeof CategoriesRoute
   CheckoutRoute: typeof CheckoutRoute
   CreatorsRoute: typeof CreatorsRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
+  DealsRoute: typeof DealsRoute
+  FreeRoute: typeof FreeRoute
   LibraryRoute: typeof LibraryRoute
   MarketplaceRoute: typeof MarketplaceRoute
+  NotificationsRoute: typeof NotificationsRoute
   OrdersRoute: typeof OrdersRoute
   WishlistRoute: typeof WishlistRoute
   AssetSlugRoute: typeof AssetSlugRoute
@@ -202,6 +292,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/marketplace': {
       id: '/marketplace'
       path: '/marketplace'
@@ -214,6 +311,27 @@ declare module '@tanstack/react-router' {
       path: '/library'
       fullPath: '/library'
       preLoaderRoute: typeof LibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/free': {
+      id: '/free'
+      path: '/free'
+      fullPath: '/free'
+      preLoaderRoute: typeof FreeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/deals': {
+      id: '/deals'
+      path: '/deals'
+      fullPath: '/deals'
+      preLoaderRoute: typeof DealsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/creators': {
@@ -244,6 +362,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CartRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/account': {
       id: '/account'
       path: '/account'
@@ -257,6 +389,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/dashboard/upload': {
+      id: '/dashboard/upload'
+      path: '/upload'
+      fullPath: '/dashboard/upload'
+      preLoaderRoute: typeof DashboardUploadRouteImport
+      parentRoute: typeof DashboardRoute
     }
     '/creator/$handle': {
       id: '/creator/$handle'
@@ -275,15 +414,33 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface DashboardRouteChildren {
+  DashboardUploadRoute: typeof DashboardUploadRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardUploadRoute: DashboardUploadRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AccountRoute: AccountRoute,
+  AdminRoute: AdminRoute,
+  AuthRoute: AuthRoute,
   CartRoute: CartRoute,
   CategoriesRoute: CategoriesRoute,
   CheckoutRoute: CheckoutRoute,
   CreatorsRoute: CreatorsRoute,
+  DashboardRoute: DashboardRouteWithChildren,
+  DealsRoute: DealsRoute,
+  FreeRoute: FreeRoute,
   LibraryRoute: LibraryRoute,
   MarketplaceRoute: MarketplaceRoute,
+  NotificationsRoute: NotificationsRoute,
   OrdersRoute: OrdersRoute,
   WishlistRoute: WishlistRoute,
   AssetSlugRoute: AssetSlugRoute,
