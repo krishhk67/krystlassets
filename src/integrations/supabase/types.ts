@@ -14,7 +14,167 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      assets: {
+        Row: {
+          best_seller: boolean
+          category: string
+          created_at: string
+          creator: string
+          description: string
+          downloads: string
+          featured: boolean
+          flash_deal: boolean
+          handle: string
+          id: string
+          img_key: string
+          is_new: boolean
+          kind: string
+          original_price: number | null
+          price: number
+          rating: number
+          reviews: number
+          search_vector: unknown
+          size: string
+          slug: string
+          software: string[]
+          staff_pick: boolean
+          tags: string[]
+          tc: string
+          tint: string
+          title: string
+          updated: string
+          version: string
+        }
+        Insert: {
+          best_seller?: boolean
+          category: string
+          created_at?: string
+          creator: string
+          description?: string
+          downloads?: string
+          featured?: boolean
+          flash_deal?: boolean
+          handle: string
+          id: string
+          img_key?: string
+          is_new?: boolean
+          kind: string
+          original_price?: number | null
+          price?: number
+          rating?: number
+          reviews?: number
+          search_vector?: unknown
+          size?: string
+          slug: string
+          software?: string[]
+          staff_pick?: boolean
+          tags?: string[]
+          tc?: string
+          tint?: string
+          title: string
+          updated?: string
+          version?: string
+        }
+        Update: {
+          best_seller?: boolean
+          category?: string
+          created_at?: string
+          creator?: string
+          description?: string
+          downloads?: string
+          featured?: boolean
+          flash_deal?: boolean
+          handle?: string
+          id?: string
+          img_key?: string
+          is_new?: boolean
+          kind?: string
+          original_price?: number | null
+          price?: number
+          rating?: number
+          reviews?: number
+          search_vector?: unknown
+          size?: string
+          slug?: string
+          software?: string[]
+          staff_pick?: boolean
+          tags?: string[]
+          tc?: string
+          tint?: string
+          title?: string
+          updated?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assets_handle_fkey"
+            columns: ["handle"]
+            isOneToOne: false
+            referencedRelation: "creators"
+            referencedColumns: ["handle"]
+          },
+        ]
+      }
+      creators: {
+        Row: {
+          achievements: string[]
+          bio: string
+          created_at: string
+          followers: string
+          following: string
+          handle: string
+          joined: string
+          location: string
+          name: string
+          published: number
+          rating: number
+          response_time: string
+          sales: string
+          tint: string
+          total_sales: number
+          verified: boolean
+          website: string
+        }
+        Insert: {
+          achievements?: string[]
+          bio?: string
+          created_at?: string
+          followers?: string
+          following?: string
+          handle: string
+          joined?: string
+          location?: string
+          name: string
+          published?: number
+          rating?: number
+          response_time?: string
+          sales?: string
+          tint?: string
+          total_sales?: number
+          verified?: boolean
+          website?: string
+        }
+        Update: {
+          achievements?: string[]
+          bio?: string
+          created_at?: string
+          followers?: string
+          following?: string
+          handle?: string
+          joined?: string
+          location?: string
+          name?: string
+          published?: number
+          rating?: number
+          response_time?: string
+          sales?: string
+          tint?: string
+          total_sales?: number
+          verified?: boolean
+          website?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
