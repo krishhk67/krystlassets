@@ -1,26 +1,71 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
+import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { Shell, Stars, Chip, CreatorAvatar, Verified, AssetGrid, SectionLabel } from "@/components/site";
-import { bySlug, byCreator, creatorByHandle, assets, sampleReviews } from "@/lib/mock";
+import { getAssetBySlug } from "@/lib/catalog.functions";
+import { withImg } from "@/lib/img";
+import { sampleReviews, type Tint } from "@/lib/mock";
+
+const assetQueryOptions = (fn: ReturnType<typeof useServerFn<typeof getAssetBySlug>>, slug: string) =>
+  queryOptions({
+    queryKey: ["asset", slug],
+    queryFn: async () => {
+      const res = await fn({ data: { slug } });
+      if (!res) return null;
+      return {
+        asset: withImg(res.asset),
+        creator: res.creator,
+        related: res.related.map(withImg),
+        moreFrom: res.moreFrom.map(withImg),
+      };
+    },
+    staleTime: 60_000,
+  });
 
 export const Route = createFileRoute("/asset/$slug")({
-  loader: ({ params }) => {
-    const a = bySlug(params.slug);
-    if (!a) throw notFound();
-    return { asset: a };
+  loader: async ({ params, context }) => {
+    const data = await context.queryClient.ensureQueryData(
+      queryOptions({
+        queryKey: ["asset", params.slug],
+        queryFn: async () => {
+          const res = await getAssetBySlug({ data: { slug: params.slug } });
+          if (!res) return null;
+          return {
+            asset: withImg(res.asset),
+            creator: res.creator,
+            related: res.related.map(withImg),
+            moreFrom: res.moreFrom.map(withImg),
+          };
+        },
+      }),
+    );
+    if (!data) throw notFound();
+    return { title: data.asset.title, description: data.asset.description ?? "", img: data.asset.img };
   },
   head: ({ loaderData }) => ({
     meta: loaderData
       ? [
-          { title: `${loaderData.asset.title} — Krystlassets` },
-          { name: "description", content: `${loaderData.asset.title} by ${loaderData.asset.creator}. ${loaderData.asset.category} for ${loaderData.asset.software.join(", ")}.` },
-          { property: "og:title", content: loaderData.asset.title },
-          { property: "og:image", content: loaderData.asset.img },
+          { title: `${loaderData.title} — Krystlassets` },
+          { name: "description", content: loaderData.description || `${loaderData.title} on Krystlassets.` },
+          { property: "og:title", content: loaderData.title },
+          { property: "og:description", content: loaderData.description || "" },
+          { property: "og:image", content: loaderData.img },
         ]
       : [{ title: "Asset — Krystlassets" }, { name: "robots", content: "noindex" }],
   }),
   component: AssetPage,
   notFoundComponent: AssetNotFound,
+  errorComponent: ({ error }) => (
+    <Shell>
+      <div className="mx-auto max-w-2xl px-6 py-32 text-center">
+        <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-[color:var(--mute)]">// asset · error</div>
+        <h1 className="mt-4 font-display text-4xl">This clip won't load.</h1>
+        <p className="mt-4 font-mono text-sm text-[color:var(--mute)]">{error.message}</p>
+        <Link to="/marketplace" className="mt-8 inline-flex border border-[color:var(--cyan)] px-4 py-2 font-mono text-[11px] uppercase tracking-widest text-[color:var(--cyan)]">Back to marketplace</Link>
+      </div>
+    </Shell>
+  ),
 });
 
 function AssetNotFound() {
@@ -37,10 +82,11 @@ function AssetNotFound() {
 }
 
 function AssetPage() {
-  const { asset: a } = Route.useLoaderData();
-  const creator = creatorByHandle(a.handle);
-  const related = assets.filter((x) => x.id !== a.id && x.category === a.category).slice(0, 4);
-  const moreFrom = byCreator(a.handle).filter((x) => x.id !== a.id).slice(0, 4);
+  const { slug } = Route.useParams();
+  const fn = useServerFn(getAssetBySlug);
+  const { data } = useSuspenseQuery(assetQueryOptions(fn, slug));
+  if (!data) return <AssetNotFound />;
+  const { asset: a, creator, related, moreFrom } = data;
   const [tab, setTab] = useState<"overview" | "reviews" | "changelog" | "license">("overview");
   const priceLabel = a.price === 0 ? "Free" : `$${a.price}`;
 
@@ -87,7 +133,7 @@ function AssetPage() {
 
             {tab === "overview" && (
               <div className="mt-6 space-y-6 text-sm leading-relaxed text-[color:var(--foreground)]/85">
-                <p>A pack of {a.category.toLowerCase()} designed for {a.software.join(", ")}. Every element is loopable, timeline-safe, and delivered at broadcast spec. Zero watermarks, zero seams.</p>
+                <p>{a.description || `A pack of ${a.category.toLowerCase()} designed for ${a.software.join(", ")}. Every element is loopable, timeline-safe, and delivered at broadcast spec. Zero watermarks, zero seams.`}</p>
                 <div>
                   <SectionLabel>// what's inside</SectionLabel>
                   <ul className="grid gap-2 sm:grid-cols-2 font-mono text-[11px]">
@@ -200,11 +246,11 @@ function AssetPage() {
               {creator && (
                 <div className="border border-[color:var(--hairline)] bg-[color:var(--surface)] p-5">
                   <Link to="/creator/$handle" params={{ handle: creator.handle }} className="flex items-center gap-3">
-                    <CreatorAvatar tint={creator.tint} size={44} />
+                    <CreatorAvatar tint={creator.tint as Tint} size={44} />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
                         <span className="font-display text-lg">{creator.name}</span>
-                        {creator.verified && <Verified tint={creator.tint} />}
+                        {creator.verified && <Verified tint={creator.tint as Tint} />}
                       </div>
                       <div className="font-mono text-[11px] text-[color:var(--mute)]">@{creator.handle} · {creator.followers} followers</div>
                     </div>
@@ -214,7 +260,7 @@ function AssetPage() {
                   <div className="mt-4 grid grid-cols-3 gap-2 font-mono text-[11px]">
                     <div><div>{creator.published}</div><div className="text-[10px] uppercase tracking-widest text-[color:var(--mute)]">assets</div></div>
                     <div><div>{creator.sales}</div><div className="text-[10px] uppercase tracking-widest text-[color:var(--mute)]">sales</div></div>
-                    <div><div>{creator.rating.toFixed(1)} ★</div><div className="text-[10px] uppercase tracking-widest text-[color:var(--mute)]">rating</div></div>
+                    <div><div>{Number(creator.rating).toFixed(1)} ★</div><div className="text-[10px] uppercase tracking-widest text-[color:var(--mute)]">rating</div></div>
                   </div>
                 </div>
               )}
