@@ -1,6 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { toast } from "sonner";
 import { Shell } from "@/components/site";
+import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Sign in — Krystlassets" }, { name: "robots", content: "noindex" }] }),
@@ -10,7 +13,64 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [role, setRole] = useState<"buyer" | "seller">("buyer");
+  const [handle, setHandle] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const nav = useNavigate();
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (mode === "signup") {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: window.location.origin,
+            data: {
+              handle: handle || undefined,
+              display_name: handle || email.split("@")[0],
+              mode: role,
+            },
+          },
+        });
+        if (error) throw error;
+        toast.success("Account created. Welcome to Krystlassets.");
+        nav({ to: role === "seller" ? "/dashboard" : "/marketplace" });
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        toast.success("Signed in.");
+        nav({ to: "/marketplace" });
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Something didn't line up. Try again.";
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function onGoogle() {
+    setLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (result.error) {
+        toast.error(result.error.message ?? "Google sign-in failed.");
+        return;
+      }
+      if (result.redirected) return;
+      toast.success("Signed in with Google.");
+      nav({ to: "/marketplace" });
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <Shell noTicker>
       <div className="relative min-h-[calc(100vh-4rem)] overflow-hidden">
@@ -38,7 +98,7 @@ function AuthPage() {
           <div className="border border-[color:var(--hairline)] bg-[color:var(--surface)]/80 p-8 backdrop-blur">
             <div className="mb-6 flex gap-2 font-mono text-[11px] uppercase tracking-widest">
               {(["signup","signin"] as const).map((m) => (
-                <button key={m} onClick={() => setMode(m)}
+                <button key={m} type="button" onClick={() => setMode(m)}
                   className={"border px-3 py-1.5 " + (mode===m?"border-[color:var(--cyan)] text-[color:var(--cyan)]":"border-[color:var(--hairline)] text-[color:var(--mute)]")}>
                   {m === "signup" ? "Create account" : "Sign in"}
                 </button>
@@ -63,29 +123,27 @@ function AuthPage() {
               </div>
             )}
 
-            <form onSubmit={(e) => { e.preventDefault(); nav({ to: role === "seller" && mode === "signup" ? "/dashboard" : "/marketplace" }); }} className="space-y-4">
+            <form onSubmit={onSubmit} className="space-y-4">
               {mode === "signup" && (
                 <label className="block">
                   <span className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--mute)]">Handle</span>
-                  <input required placeholder="@yourname" className="mt-1 w-full border border-[color:var(--hairline)] bg-transparent px-3 py-2 font-mono outline-none focus:border-[color:var(--cyan)]" />
+                  <input value={handle} onChange={(e) => setHandle(e.target.value)} required placeholder="@yourname" className="mt-1 w-full border border-[color:var(--hairline)] bg-transparent px-3 py-2 font-mono outline-none focus:border-[color:var(--cyan)]" />
                 </label>
               )}
               <label className="block">
                 <span className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--mute)]">Email</span>
-                <input required type="email" className="mt-1 w-full border border-[color:var(--hairline)] bg-transparent px-3 py-2 outline-none focus:border-[color:var(--cyan)]" />
+                <input value={email} onChange={(e) => setEmail(e.target.value)} required type="email" className="mt-1 w-full border border-[color:var(--hairline)] bg-transparent px-3 py-2 outline-none focus:border-[color:var(--cyan)]" />
               </label>
               <label className="block">
                 <span className="font-mono text-[10px] uppercase tracking-widest text-[color:var(--mute)]">Password</span>
-                <input required type="password" className="mt-1 w-full border border-[color:var(--hairline)] bg-transparent px-3 py-2 outline-none focus:border-[color:var(--cyan)]" />
+                <input value={password} onChange={(e) => setPassword(e.target.value)} required type="password" minLength={6} className="mt-1 w-full border border-[color:var(--hairline)] bg-transparent px-3 py-2 outline-none focus:border-[color:var(--cyan)]" />
               </label>
-              <button type="submit" className="mt-2 flex w-full items-center justify-center gap-2 bg-[color:var(--amber)] px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-[color:var(--ink)] hover:-translate-y-0.5 transition-transform">
-                {mode === "signup" ? "Create account" : "Sign in"} <span>→</span>
+              <button type="submit" disabled={loading} className="mt-2 flex w-full items-center justify-center gap-2 bg-[color:var(--amber)] px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-[color:var(--ink)] hover:-translate-y-0.5 transition-transform disabled:opacity-60">
+                {loading ? "..." : mode === "signup" ? "Create account" : "Sign in"} <span>→</span>
               </button>
-              <div className="grid grid-cols-3 gap-2">
-                {["Google","GitHub","Apple"].map(p => (
-                  <button key={p} type="button" className="border border-[color:var(--hairline)] px-3 py-2 font-mono text-[11px] uppercase tracking-widest hover:border-[color:var(--foreground)]">{p}</button>
-                ))}
-              </div>
+              <button type="button" onClick={onGoogle} disabled={loading} className="w-full border border-[color:var(--hairline)] px-3 py-2 font-mono text-[11px] uppercase tracking-widest hover:border-[color:var(--foreground)] disabled:opacity-60">
+                Continue with Google
+              </button>
             </form>
             <p className="mt-6 font-mono text-[10px] uppercase tracking-widest text-[color:var(--mute)]">
               By continuing you agree to the <Link to="/terms" className="hair-link">terms</Link> and <Link to="/privacy" className="hair-link">privacy</Link>.

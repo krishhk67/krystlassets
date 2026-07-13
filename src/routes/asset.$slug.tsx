@@ -1,11 +1,14 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { useSuspenseQuery, useMutation, useQuery, useQueryClient, queryOptions } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { Shell, Stars, Chip, CreatorAvatar, Verified, AssetGrid, SectionLabel } from "@/components/site";
 import { getAssetBySlug } from "@/lib/catalog.functions";
+import { addToCart, toggleWishlist, getMyWishlist } from "@/lib/user.functions";
 import { withImg } from "@/lib/img";
 import { sampleReviews, type Tint } from "@/lib/mock";
+import { useSession } from "@/hooks/useSession";
 
 const assetQueryOptions = (fn: ReturnType<typeof useServerFn<typeof getAssetBySlug>>, slug: string) =>
   queryOptions({

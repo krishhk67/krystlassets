@@ -1,6 +1,11 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState, type ReactNode } from "react";
+import { toast } from "sonner";
 import type { Asset, Tint } from "@/lib/mock";
+import { useSession } from "@/hooks/useSession";
+import { supabase } from "@/integrations/supabase/client";
+import { getMyCart } from "@/lib/user.functions";
 
 // --- atoms ---
 export function Verified({ tint = "cyan" }: { tint?: Tint }) {
@@ -157,6 +162,25 @@ const NAV: Array<[string, string]> = [
 ];
 
 export function Header() {
+  const { isAuthed, user } = useSession();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const cart = useQuery({
+    queryKey: ["cart"],
+    queryFn: () => getMyCart(),
+    enabled: isAuthed,
+  });
+  const cartCount = cart.data?.length ?? 0;
+
+  async function handleSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    toast.success("Signed out");
+    navigate({ to: "/", replace: true });
+  }
+
   return (
     <header className="sticky top-0 z-30 backdrop-blur-md bg-[color:color-mix(in_oklab,var(--background)_82%,transparent)] border-b border-[color:var(--hairline)]">
       <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-6 px-6">
@@ -180,11 +204,25 @@ export function Header() {
           </Link>
           <Link to="/cart" title="Cart" className="relative inline-flex h-9 w-9 items-center justify-center border border-[color:var(--hairline)] hover:border-[color:var(--amber)]">
             <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden><path d="M3 4h2l1.6 8.6a2 2 0 0 0 2 1.6h5.8a2 2 0 0 0 2-1.5L18 6H6" fill="none" stroke="currentColor" strokeWidth="1.4"/></svg>
-            <span className="absolute -right-1 -top-1 h-4 min-w-4 rounded-full bg-[color:var(--amber)] px-1 font-mono text-[9px] leading-4 text-[color:var(--ink)]">2</span>
+            {cartCount > 0 && (
+              <span className="absolute -right-1 -top-1 h-4 min-w-4 rounded-full bg-[color:var(--amber)] px-1 font-mono text-[9px] leading-4 text-[color:var(--ink)]">{cartCount}</span>
+            )}
           </Link>
-          <Link to="/auth" className="hair-link hidden sm:inline-block text-sm text-[color:var(--mute)] hover:text-foreground">
-            Sign in
-          </Link>
+          {isAuthed ? (
+            <>
+              <Link to="/account" title={user?.email ?? "Account"} className="hidden sm:inline-flex h-9 items-center gap-2 border border-[color:var(--hairline)] px-3 hover:border-[color:var(--cyan)] font-mono text-[11px] uppercase tracking-widest">
+                <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--cyan)]" />
+                <span className="max-w-[8rem] truncate">{user?.email?.split("@")[0]}</span>
+              </Link>
+              <button onClick={handleSignOut} className="hair-link hidden sm:inline-block text-sm text-[color:var(--mute)] hover:text-foreground">
+                Sign out
+              </button>
+            </>
+          ) : (
+            <Link to="/auth" className="hair-link hidden sm:inline-block text-sm text-[color:var(--mute)] hover:text-foreground">
+              Sign in
+            </Link>
+          )}
           <Link
             to="/dashboard"
             className="group inline-flex items-center gap-2 border border-[color:var(--amber)] bg-[color:var(--amber)] px-4 py-1.5 font-mono text-[11px] uppercase tracking-widest text-[color:var(--ink)] transition-colors hover:bg-transparent hover:text-[color:var(--amber)]"
