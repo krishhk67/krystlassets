@@ -88,10 +88,45 @@ function AssetPage() {
   const { slug } = Route.useParams();
   const fn = useServerFn(getAssetBySlug);
   const { data } = useSuspenseQuery(assetQueryOptions(fn, slug));
+  const [tab, setTab] = useState<"overview" | "reviews" | "changelog" | "license">("overview");
+  const { isAuthed } = useSession();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+
+  const wishlist = useQuery({
+    queryKey: ["wishlist"],
+    queryFn: () => getMyWishlist(),
+    enabled: isAuthed,
+  });
+  const inWishlist = !!wishlist.data?.some((w) => w.asset_id === data?.asset.id);
+
+  const addCart = useMutation({
+    mutationFn: (asset_id: string) => addToCart({ data: { asset_id } }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["cart"] });
+      toast.success("Added to cart");
+    },
+  });
+  const toggleWish = useMutation({
+    mutationFn: (asset_id: string) => toggleWishlist({ data: { asset_id } }),
+    onSuccess: (res) => {
+      qc.invalidateQueries({ queryKey: ["wishlist"] });
+      toast.success(res.saved ? "Saved to wishlist" : "Removed from wishlist");
+    },
+  });
+
   if (!data) return <AssetNotFound />;
   const { asset: a, creator, related, moreFrom } = data;
-  const [tab, setTab] = useState<"overview" | "reviews" | "changelog" | "license">("overview");
   const priceLabel = a.price === 0 ? "Free" : `$${a.price}`;
+
+  const requireAuth = () => {
+    if (!isAuthed) {
+      toast("Sign in to keep your cart across sessions.");
+      navigate({ to: "/auth" });
+      return false;
+    }
+    return true;
+  };
 
   return (
     <Shell>
