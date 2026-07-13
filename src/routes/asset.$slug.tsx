@@ -1,11 +1,14 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { useSuspenseQuery, useMutation, useQuery, useQueryClient, queryOptions } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { Shell, Stars, Chip, CreatorAvatar, Verified, AssetGrid, SectionLabel } from "@/components/site";
 import { getAssetBySlug } from "@/lib/catalog.functions";
+import { addToCart, toggleWishlist, getMyWishlist } from "@/lib/user.functions";
 import { withImg } from "@/lib/img";
 import { sampleReviews, type Tint } from "@/lib/mock";
+import { useSession } from "@/hooks/useSession";
 
 const assetQueryOptions = (fn: ReturnType<typeof useServerFn<typeof getAssetBySlug>>, slug: string) =>
   queryOptions({
@@ -85,10 +88,45 @@ function AssetPage() {
   const { slug } = Route.useParams();
   const fn = useServerFn(getAssetBySlug);
   const { data } = useSuspenseQuery(assetQueryOptions(fn, slug));
+  const [tab, setTab] = useState<"overview" | "reviews" | "changelog" | "license">("overview");
+  const { isAuthed } = useSession();
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+
+  const wishlist = useQuery({
+    queryKey: ["wishlist"],
+    queryFn: () => getMyWishlist(),
+    enabled: isAuthed,
+  });
+  const inWishlist = !!wishlist.data?.some((w) => w.asset_id === data?.asset.id);
+
+  const addCart = useMutation({
+    mutationFn: (asset_id: string) => addToCart({ data: { asset_id } }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["cart"] });
+      toast.success("Added to cart");
+    },
+  });
+  const toggleWish = useMutation({
+    mutationFn: (asset_id: string) => toggleWishlist({ data: { asset_id } }),
+    onSuccess: (res) => {
+      qc.invalidateQueries({ queryKey: ["wishlist"] });
+      toast.success(res.saved ? "Saved to wishlist" : "Removed from wishlist");
+    },
+  });
+
   if (!data) return <AssetNotFound />;
   const { asset: a, creator, related, moreFrom } = data;
-  const [tab, setTab] = useState<"overview" | "reviews" | "changelog" | "license">("overview");
   const priceLabel = a.price === 0 ? "Free" : `$${a.price}`;
+
+  const requireAuth = () => {
+    if (!isAuthed) {
+      toast("Sign in to keep your cart across sessions.");
+      navigate({ to: "/auth" });
+      return false;
+    }
+    return true;
+  };
 
   return (
     <Shell>
@@ -226,14 +264,22 @@ function AssetPage() {
                 <div className="mt-2 flex items-center gap-3 font-mono text-[11px] text-[color:var(--mute)]">
                   <Stars value={a.rating} /> <span>·</span> <span>{a.reviews} reviews</span> <span>·</span> <span>{a.downloads} dl</span>
                 </div>
-                <Link to="/cart" className="mt-6 flex items-center justify-center gap-2 bg-[color:var(--amber)] px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-[color:var(--ink)] hover:-translate-y-0.5 transition-transform">
-                  Add to cart <span>→</span>
-                </Link>
+                <button
+                  onClick={() => { if (requireAuth()) addCart.mutate(a.id); }}
+                  disabled={addCart.isPending}
+                  className="mt-6 flex w-full items-center justify-center gap-2 bg-[color:var(--amber)] px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-[color:var(--ink)] hover:-translate-y-0.5 transition-transform disabled:opacity-60"
+                >
+                  {addCart.isPending ? "Adding..." : "Add to cart"} <span>→</span>
+                </button>
                 <Link to="/checkout" className="mt-2 flex items-center justify-center gap-2 border border-[color:var(--hairline)] px-5 py-3 font-mono text-[11px] uppercase tracking-widest hover:border-[color:var(--cyan)] hover:text-[color:var(--cyan)]">
                   Buy now
                 </Link>
-                <button className="mt-2 flex w-full items-center justify-center gap-2 border border-[color:var(--hairline)] px-5 py-2 font-mono text-[11px] uppercase tracking-widest text-[color:var(--mute)] hover:text-[color:var(--foreground)]">
-                  ♡ Wishlist
+                <button
+                  onClick={() => { if (requireAuth()) toggleWish.mutate(a.id); }}
+                  disabled={toggleWish.isPending}
+                  className={"mt-2 flex w-full items-center justify-center gap-2 border px-5 py-2 font-mono text-[11px] uppercase tracking-widest " + (inWishlist ? "border-[color:var(--magenta)] text-[color:var(--magenta)]" : "border-[color:var(--hairline)] text-[color:var(--mute)] hover:text-[color:var(--foreground)]")}
+                >
+                  {inWishlist ? "♥ Wishlisted" : "♡ Wishlist"}
                 </button>
                 <dl className="mt-6 grid grid-cols-2 gap-y-2 font-mono text-[11px]">
                   <dt className="text-[color:var(--mute)]">Version</dt><dd>{a.version}</dd>

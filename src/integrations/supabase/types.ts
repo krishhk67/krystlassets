@@ -115,6 +115,38 @@ export type Database = {
           },
         ]
       }
+      cart_items: {
+        Row: {
+          asset_id: string
+          created_at: string
+          id: string
+          qty: number
+          user_id: string
+        }
+        Insert: {
+          asset_id: string
+          created_at?: string
+          id?: string
+          qty?: number
+          user_id: string
+        }
+        Update: {
+          asset_id?: string
+          created_at?: string
+          id?: string
+          qty?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cart_items_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       creators: {
         Row: {
           achievements: string[]
@@ -174,6 +206,68 @@ export type Database = {
           website?: string
         }
         Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string
+          bio: string
+          created_at: string
+          display_name: string
+          handle: string | null
+          id: string
+          mode: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string
+          bio?: string
+          created_at?: string
+          display_name?: string
+          handle?: string | null
+          id: string
+          mode?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string
+          bio?: string
+          created_at?: string
+          display_name?: string
+          handle?: string | null
+          id?: string
+          mode?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      wishlist_items: {
+        Row: {
+          asset_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          asset_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          asset_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wishlist_items_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
