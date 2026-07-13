@@ -264,14 +264,22 @@ function AssetPage() {
                 <div className="mt-2 flex items-center gap-3 font-mono text-[11px] text-[color:var(--mute)]">
                   <Stars value={a.rating} /> <span>·</span> <span>{a.reviews} reviews</span> <span>·</span> <span>{a.downloads} dl</span>
                 </div>
-                <Link to="/cart" className="mt-6 flex items-center justify-center gap-2 bg-[color:var(--amber)] px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-[color:var(--ink)] hover:-translate-y-0.5 transition-transform">
-                  Add to cart <span>→</span>
-                </Link>
+                <button
+                  onClick={() => { if (requireAuth()) addCart.mutate(a.id); }}
+                  disabled={addCart.isPending}
+                  className="mt-6 flex w-full items-center justify-center gap-2 bg-[color:var(--amber)] px-5 py-3 font-mono text-[11px] uppercase tracking-widest text-[color:var(--ink)] hover:-translate-y-0.5 transition-transform disabled:opacity-60"
+                >
+                  {addCart.isPending ? "Adding..." : "Add to cart"} <span>→</span>
+                </button>
                 <Link to="/checkout" className="mt-2 flex items-center justify-center gap-2 border border-[color:var(--hairline)] px-5 py-3 font-mono text-[11px] uppercase tracking-widest hover:border-[color:var(--cyan)] hover:text-[color:var(--cyan)]">
                   Buy now
                 </Link>
-                <button className="mt-2 flex w-full items-center justify-center gap-2 border border-[color:var(--hairline)] px-5 py-2 font-mono text-[11px] uppercase tracking-widest text-[color:var(--mute)] hover:text-[color:var(--foreground)]">
-                  ♡ Wishlist
+                <button
+                  onClick={() => { if (requireAuth()) toggleWish.mutate(a.id); }}
+                  disabled={toggleWish.isPending}
+                  className={"mt-2 flex w-full items-center justify-center gap-2 border px-5 py-2 font-mono text-[11px] uppercase tracking-widest " + (inWishlist ? "border-[color:var(--magenta)] text-[color:var(--magenta)]" : "border-[color:var(--hairline)] text-[color:var(--mute)] hover:text-[color:var(--foreground)]")}
+                >
+                  {inWishlist ? "♥ Wishlisted" : "♡ Wishlist"}
                 </button>
                 <dl className="mt-6 grid grid-cols-2 gap-y-2 font-mono text-[11px]">
                   <dt className="text-[color:var(--mute)]">Version</dt><dd>{a.version}</dd>
