@@ -27,6 +27,7 @@ type Row = {
   updated: string;
   version: string;
   img_key: string;
+  img_url?: string;
   tint: string;
   category: string;
   tags: string[];
@@ -56,8 +57,9 @@ function toAsset(r: Row): Asset & { description?: string; img_key: string } {
     software: r.software ?? [],
     updated: r.updated,
     version: r.version,
-    img: "", // resolved on client via img_key
+    img: r.img_url && r.img_url.length > 0 ? r.img_url : "",
     img_key: r.img_key,
+    img_url: r.img_url,
     tint: (r.tint as Tint) ?? "cyan",
     category: r.category,
     tags: r.tags ?? [],
