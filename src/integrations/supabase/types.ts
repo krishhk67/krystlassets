@@ -27,9 +27,11 @@ export type Database = {
           handle: string
           id: string
           img_key: string
+          img_url: string
           is_new: boolean
           kind: string
           original_price: number | null
+          owner_id: string | null
           price: number
           rating: number
           reviews: number
@@ -38,11 +40,13 @@ export type Database = {
           slug: string
           software: string[]
           staff_pick: boolean
+          status: string
           tags: string[]
           tc: string
           tint: string
           title: string
           updated: string
+          updated_at: string
           version: string
         }
         Insert: {
@@ -57,9 +61,11 @@ export type Database = {
           handle: string
           id: string
           img_key?: string
+          img_url?: string
           is_new?: boolean
           kind: string
           original_price?: number | null
+          owner_id?: string | null
           price?: number
           rating?: number
           reviews?: number
@@ -68,11 +74,13 @@ export type Database = {
           slug: string
           software?: string[]
           staff_pick?: boolean
+          status?: string
           tags?: string[]
           tc?: string
           tint?: string
           title: string
           updated?: string
+          updated_at?: string
           version?: string
         }
         Update: {
@@ -87,9 +95,11 @@ export type Database = {
           handle?: string
           id?: string
           img_key?: string
+          img_url?: string
           is_new?: boolean
           kind?: string
           original_price?: number | null
+          owner_id?: string | null
           price?: number
           rating?: number
           reviews?: number
@@ -98,11 +108,13 @@ export type Database = {
           slug?: string
           software?: string[]
           staff_pick?: boolean
+          status?: string
           tags?: string[]
           tc?: string
           tint?: string
           title?: string
           updated?: string
+          updated_at?: string
           version?: string
         }
         Relationships: [
