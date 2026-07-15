@@ -39,7 +39,7 @@ type Row = {
   description?: string;
 };
 
-function toAsset(r: Row): Asset & { description?: string; img_key: string } {
+function toAsset(r: Row): Asset & { description?: string; img_key: string; img_url?: string } {
   return {
     id: r.id,
     slug: r.slug,
